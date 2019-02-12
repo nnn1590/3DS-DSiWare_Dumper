@@ -10,9 +10,9 @@ endif
 TOPDIR ?= $(CURDIR)
 include $(DEVKITARM)/3ds_rules
 
-APP_TITLE = Frogtool
-APP_DESCRIPTION = v1.1 - Frogminer title manager
-APP_AUTHOR = zoogie
+APP_TITLE = DSInternet Dumper
+APP_DESCRIPTION = Dump DSInternet DSiWare
+APP_AUTHOR = zoogie & RandalHoffman
 
 #---------------------------------------------------------------------------------
 # TARGET is the name of the output

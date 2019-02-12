@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <3ds.h>
-#define SECOND(x) (x*1000*1000*1000)
+#define SECOND(x) (x*1000UL*1000UL*1000UL)
 PrintConsole topScreen, bottomScreen;
 AM_TWLPartitionInfo info;
 
