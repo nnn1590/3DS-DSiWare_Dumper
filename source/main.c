@@ -16,9 +16,9 @@ Result export(u64 tid, u8 op, u8 *workbuf){
 		printf("DSiWare already exists on SD\n\n");
 		return 1;
 	}
-	printf("exporting:%d %016llX to\n%s...\n", op, tid, fpath);
+	printf("Exporting:%d %016llX to\n%s...\n", op, tid, fpath);
 	res = AM_ExportTwlBackup(tid, op, workbuf, 0x20000, fpath);
-	printf("twl export: %08X %s\n\n",(int)res, res ? "FAILED!" : "SUCCESS!");
+	printf("Exporting %s\n\n", res ? "failed." : "succeeded.");
 	
 	return res;
 }
@@ -33,19 +33,44 @@ int main(int argc, char* argv[])
 	consoleSelect(&topScreen);
 	u32 BUF_SIZE = 0x20000;
 	u8 op=5;
+	Result res;
 	
 	u8 *buf = (u8*)malloc(BUF_SIZE);
-	Result res = nsInit();
-	printf("nsInit: %08X\n",(int)res);
+
 	res = amInit();
+	if (res) {
+		printf("Unable to initialize AM service\n");
+		svcSleepThread(SECOND(7));
+		return 1;
+	}
 	printf("amInit: %08X\n",(int)res);
 	res = AM_GetTWLPartitionInfo(&info);
-	printf("twlInfo: %08X\n\n",(int)res);
+	if (res) {
+		printf("Unable to get DSiWare Parition information.\n");
+		svcSleepThread(SECOND(7));
+		return 1;
+	}
+//	printf("twlInfo: %08X\n\n",(int)res);
+	printf("Attempting to dump DSInternet\n");
 	res = export(0x0004800542383841, op, buf);
+	if (res) {
+		printf("Attempting to dump US/EU/JP DS Download Play\n");
+		res = export(0x00048005484E4441, op, buf);
+		//if (res) {
+			//printf("attempting to dump ")
+			//res = export(0x000480044b385545, op, buf);
+			//if (res) {
+				//res = export(0x000480044b454e4a, op, buf);
+				if (res) {
+					printf("Failed to dump System DSiWare. Manually dump any DSiWare application using data management\n");
+				}
+			//}
+		//}
+	}
 	svcSleepThread(SECOND(7));
 
     free(buf);
-	nsExit();
+
 	amExit();
 	gfxExit();
 	
